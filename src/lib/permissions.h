@@ -17,7 +17,6 @@
 #pragma once
 
 #include "utils.h"
-#include <gtk/gtk.h>
 #include <pwd.h>
 
 G_BEGIN_DECLS

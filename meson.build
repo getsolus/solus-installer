@@ -1,5 +1,6 @@
 project('installer', 'c',
         version: '17',
+        license: 'Apache-2.0',
         meson_version: '>= 0.57.0',
         default_options: [
             'warning_level=2',

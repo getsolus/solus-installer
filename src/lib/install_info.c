@@ -31,7 +31,7 @@ static GParamSpec *props[N_EXP_PROPERTIES] = {NULL};
 
 struct _InstallerInfo {
     GObject parent_instance;
-    GtkWidget *owner;
+    GObject *owner;
 
     /* Locale */
 
@@ -180,7 +180,7 @@ static void installer_info_set_property(GObject *obj, guint prop_id, const GValu
     {
     case PROP_OWNER:
         if (!(self->owner)) {
-            self->owner = (GtkWidget *) g_value_get_gtype(val);
+            self->owner = (GObject *) g_value_get_gtype(val);
         }
         break;
 
@@ -210,7 +210,7 @@ static void installer_info_set_property(GObject *obj, guint prop_id, const GValu
     }
 }
 
-InstallerInfo *installer_info_new(GtkWidget *owner) {
+InstallerInfo *installer_info_new(GObject *owner) {
     return g_object_new(INSTALLER_TYPE_INFO, "owner", owner, NULL);
 }
 

@@ -4,19 +4,16 @@ add_global_arguments([
 	'-Dwerror=true',
 ], language: 'c')
 
+subdir('lib')
+
 os_installer_sources = [
-    'disk_manager.c',
-    'install_info.c',
     'main.c',
-    'permissions.c',
-    'utils.c',
     'window.c'
 ]
 
 os_installer_deps = [
-    dependency('glib-2.0', version: '>= 2.66'),
-	dependency('gio-2.0', version: '>= 2.66'),
-    dependency('gtk+-3.0', version: '>= 3.22.0')
+    dependency('gtk+-3.0', version: '>= 3.22.0'),
+    link_installer_lib
 ]
 
 # Compile our gresource file

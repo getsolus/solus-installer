@@ -16,8 +16,9 @@
 
 #pragma once
 
-#include "disk_manager.h"
-#include "permissions.h"
+#include "lib/disk_manager.h"
+#include "lib/install_info.h"
+#include "lib/permissions.h"
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

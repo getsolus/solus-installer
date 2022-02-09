@@ -17,7 +17,6 @@
 #pragma once
 
 #include "utils.h"
-#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -29,7 +28,7 @@ G_DECLARE_FINAL_TYPE(InstallerInfo, installer_info, INSTALLER, INFO, GObject)
  * Create a new installer info object to hold information about
  * the installation between pages.
  */
-InstallerInfo *installer_info_new(GtkWidget *owner);
+InstallerInfo *installer_info_new(GObject *owner);
 
 /* Property Getters */
 

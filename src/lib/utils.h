@@ -16,7 +16,9 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <gio/gio.h>
+#include <glib/gerror.h>
+#include <glib/gtypes.h>
 
 /**
  * Simple helper function to check if a string is valid and not empty.

@@ -144,7 +144,7 @@ static void installer_window_init(InstallerWindow *self) {
 
     /* Pack everything into the top-level */
 
-    self->info = installer_info_new(GTK_WIDGET(self));
+    self->info = installer_info_new(G_OBJECT(self));
 
     gtk_container_add(GTK_CONTAINER(self), self->installer_wrap);
 
