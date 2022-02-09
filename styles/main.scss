@@ -1,0 +1,23 @@
+@import '_vars.scss';
+
+list {
+    background-image: none;
+    background-color: transparent;
+}
+
+scrolledwindow {
+    background-image: none;
+    background-color: transparent;
+}
+
+.header-box {
+    background-color: $headerBg;
+    box-shadow: $headerShadow;
+    color: white;
+}
+
+.arc-theme .header-box {
+    background-color: $arcHeaderBg;
+    box-shadow: none;
+    color: white;
+}
