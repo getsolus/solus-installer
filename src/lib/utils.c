@@ -61,3 +61,19 @@ gchar *installer_read_line_full(GFile *file, GError **err) {
     g_string_replace(str, "\n", "", -1);
     return g_strdup(str->str);
 }
+
+gboolean installer_str_contains(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
+    if (g_strstr_len(item, -1, key)) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+gboolean installer_str_starts_with(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
+    if (strncmp(key, item, strlen(key)) == 0) {
+        return TRUE;
+    }
+
+    return FALSE;
+}

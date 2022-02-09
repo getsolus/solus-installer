@@ -429,7 +429,7 @@ gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GE
     // in our Windows prefixes HashTable. If one is found, return the
     // value in the table.
     while ((child = g_dir_read_name(version_dir)) != NULL) {
-        gchar *item = g_hash_table_find(self->win_prefixes, (GHRFunc) disk_manager_match_version, (gchar *) child);
+        gchar *item = g_hash_table_find(self->win_prefixes, (GHRFunc) installer_str_starts_with, (gchar *) child);
         if (item) {
             return g_strdup(item);
         }
@@ -439,10 +439,22 @@ gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GE
     return NULL;
 }
 
-gboolean disk_manager_match_version(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
-    if (strncmp(key, item, strlen(key)) == 0) {
-        return TRUE;
+gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path) {
+    if (!DISK_IS_MANAGER(self)) {
+        return NULL;
     }
 
-    return FALSE;
+    g_autofree gchar *fpath = g_build_path(G_DIR_SEPARATOR_S, path, "Boot", "BCD", NULL);
+    g_autoptr(GFile) file = g_file_new_for_path(fpath);
+
+    if (!g_file_query_exists(file, NULL)) {
+        return NULL;
+    }
+
+    gchar *item = g_hash_table_find(self->win_bootloaders, (GHRFunc) installer_str_contains, fpath);
+    if (item) {
+        return g_strdup(item);
+    }
+
+    return "Windows bootloader";
 }

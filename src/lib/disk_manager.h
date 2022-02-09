@@ -91,13 +91,19 @@ gboolean disk_manager_umount_device(const gchar *mpoint, GError **err);
  * Windows installation location.
  * 
  * Returns a string for the Windows version, or `NULL` if an
- * error occurred trying to get the version.
+ * error occurred trying to get the version. The caller is 
+ * responsible for freeing this string.
  */
 gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GError **err);
 
 /**
- * Check if an item starts with the given key.
+ * Attempt to get the human-friendly name of the installed
+ * Windows bootloader at the given path.
+ * 
+ * Returns a string with the name of the bootloader, or `NULL`
+ * if the boot path does not exist. The caller is responsible
+ * for freeing this string.
  */
-gboolean disk_manager_match_version(gchar *key, __attribute((unused)) gchar *value, gchar *item);
+gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path);
 
 G_END_DECLS

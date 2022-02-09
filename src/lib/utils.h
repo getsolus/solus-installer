@@ -31,3 +31,17 @@ gboolean installer_is_string_valid(const gchar *str);
  * The returned value is owned by the caller.
  */
 gchar *installer_read_line_full(GFile *file, GError **err);
+
+/**
+ * Check if a string item contains the key.
+ * 
+ * For use with `g_hash_table_find`, and can be safely cast to a `GHRFunc`.
+ */
+gboolean installer_str_contains(gchar *key, __attribute((unused)) gchar *value, gchar *item);
+
+/**
+ * Check if a string item starts with the key.
+ * 
+ * For use with `g_hash_table_find`, and can be safely cast to a `GHRFunc`.
+ */
+gboolean installer_str_starts_with(gchar *key, __attribute((unused)) gchar *value, gchar *item);
