@@ -394,3 +394,55 @@ gboolean disk_manager_umount_device(const gchar *mpoint, GError **err) {
 
     return g_subprocess_wait_check(proc, NULL, err);
 }
+
+gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GError **err) {
+    if (!DISK_IS_MANAGER(self)) {
+        return NULL;
+    }
+
+    g_autofree gchar *fpath = g_build_path(G_DIR_SEPARATOR_S, path, "Windows", "servicing", "Version", NULL);
+    g_autoptr(GFile) version_file = g_file_new_for_path(fpath);
+
+    // Check if the version file exists. If it doesn't, look for System32
+    // to make sure the path really is a Windows path.
+    if (!g_file_query_exists(version_file, NULL)) {
+        fpath = g_build_path(path, "Windows", "System32", NULL);
+        g_autoptr(GFile) system32 = g_file_new_for_path(fpath);
+
+        // Windows is installed, but we can't find out what version it is
+        if (g_file_query_exists(system32, NULL)) {
+            return "Windows (Unknown)";
+        }
+
+        return NULL;
+    }
+
+    // Open the Windows version directory
+    g_autoptr(GDir) version_dir = g_dir_open(fpath, 0, err);
+    if (!version_dir) {
+        return NULL;
+    }
+
+    const gchar *child = NULL;
+
+    // Iterate over the items in the directory to try to find a match
+    // in our Windows prefixes HashTable. If one is found, return the
+    // value in the table.
+    while ((child = g_dir_read_name(version_dir)) != NULL) {
+        gchar *item = g_hash_table_find(self->win_prefixes, (GHRFunc) disk_manager_match_version, (gchar *) child);
+        if (item) {
+            return g_strdup(item);
+        }
+    }
+
+    g_dir_close(version_dir);
+    return NULL;
+}
+
+gboolean disk_manager_match_version(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
+    if (strncmp(key, item, strlen(key)) == 0) {
+        return TRUE;
+    }
+
+    return FALSE;
+}

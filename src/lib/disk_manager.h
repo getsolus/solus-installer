@@ -86,4 +86,18 @@ gboolean disk_manager_mount_device(
  */
 gboolean disk_manager_umount_device(const gchar *mpoint, GError **err);
 
+/**
+ * Attempt to get the Windows version given a path to the root
+ * Windows installation location.
+ * 
+ * Returns a string for the Windows version, or `NULL` if an
+ * error occurred trying to get the version.
+ */
+gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GError **err);
+
+/**
+ * Check if an item starts with the given key.
+ */
+gboolean disk_manager_match_version(gchar *key, __attribute((unused)) gchar *value, gchar *item);
+
 G_END_DECLS
