@@ -458,3 +458,74 @@ gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path)
 
     return "Windows bootloader";
 }
+
+gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GError **err) {
+    g_autoptr(GFile) file = g_file_new_for_path(path);
+    g_autoptr(GFileInputStream) input_stream = g_file_read(file, NULL, err);
+    if (!G_IS_FILE_INPUT_STREAM(input_stream)) {
+        return NULL;
+    }
+
+    g_autoptr(GDataInputStream) data_stream = g_data_input_stream_new(G_INPUT_STREAM(input_stream));
+
+    // Read each line of the os-release file
+    g_autofree gchar *line = NULL;
+    g_autofree gchar *val = NULL;
+    while ((line = g_data_input_stream_read_line(data_stream, NULL, NULL, err)) != NULL) {
+        if (strcmp(line, "") == 0) {
+            g_free(line);
+            continue;
+        }
+
+        // Make sure the line contains an equals character
+        if (!strchr(line, '=')) {
+            g_free(line);
+            continue;
+        }
+
+        // Get the value from the line if the key matches
+        val = disk_manager_match_os_release_line(line, find_key);
+        if (val) {
+            break;
+        }
+
+        g_free(line);
+    }
+
+    return g_strdup(val);
+}
+
+gchar *disk_manager_match_os_release_line(const gchar *line, gchar *find_key) {
+    // Split the line into parts
+    g_autofree GStrv parts = g_strsplit(line, "=", 2);
+    g_autofree gchar *key = parts[0];
+    g_autofree gchar *val = parts[1];
+    gsize len = strlen(val);
+
+    if (len == 0) {
+        return NULL;
+    }
+
+    // Extract the value from inside quotation marks if
+    // they are present.
+    if (val[0] == '"') {
+        memmove(val, val + 1, len);
+        len = strlen(val);
+    }
+    if (val[len - 1] == '"') {
+        g_autofree gchar *tmp = g_strdup(val);
+        g_free(val);
+        val = g_strdup_printf("%.*s", (gint) len - 1, tmp);
+    }
+
+    // Convert the keys to lowercase and return the 
+    // value if the keys match
+    g_autofree gchar *key_lower = g_utf8_casefold(key, -1);
+    g_autofree gchar *find_lower = g_utf8_casefold(find_key, -1);
+    if (strcmp(key_lower, find_lower) == 0) {
+        return g_strdup(val);
+    }
+
+    // This line doesn't match the given key
+    return NULL;
+}

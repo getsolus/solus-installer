@@ -106,4 +106,27 @@ gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GE
  */
 gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path);
 
+/**
+ * Attempt to get the value of a key from an os-release file.
+ * 
+ * This reads every line in the os-release file until a matching
+ * key is found. If no match is found, `NULL` is returned. If there
+ * was an error reading the file, `NULL` is returned and `err` is set.
+ * 
+ * Returns a string containing the value for the key, or `NULL` if
+ * the key was not found. The caller is responsible for freeing
+ * this string.
+ */
+gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GError **err);
+
+/**
+ * Extracts a value from a line in an os-release file if the line's key
+ * matches.
+ * 
+ * Returns a string containing the value for the key, or `NULL` if
+ * the key was not found. The caller is responsible for freeing
+ * this string.
+ */
+gchar *disk_manager_match_os_release_line(const gchar *line, gchar *find_key);
+
 G_END_DECLS
