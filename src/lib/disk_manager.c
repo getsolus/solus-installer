@@ -585,7 +585,7 @@ gchar *disk_manager_search_for_key(
         g_autoptr(GError) err = NULL;
         name = disk_manager_get_os_release_val(fpath, key, &err);
         if (err) {
-            g_warning("Error reading lsb_release file at path '%s': %s", fpath, err->message);
+            g_warning("Error reading release file at path '%s': %s", fpath, err->message);
             g_error_free(err);
             err = NULL;
         }
@@ -595,7 +595,7 @@ gchar *disk_manager_search_for_key(
         if (!installer_is_string_valid(name) && installer_is_string_valid(fallback_key)) {
             name = disk_manager_get_os_release_val(fpath, fallback_key, &err);
             if (err) {
-                g_warning("Error reading lsb_release file at path '%s': %s", fpath, err->message);
+                g_warning("Error reading release file at path '%s': %s", fpath, err->message);
             }
         }
 
