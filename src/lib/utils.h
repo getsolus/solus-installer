@@ -21,6 +21,13 @@
 #include <glib/gtypes.h>
 
 /**
+ * Check if `s1` starts with `s2`.
+ * 
+ * This expands to a call to `strncmp` to compare the strings.
+ */
+#define installer_string_starts_with(s1, s2) (strncmp(s1, s2, strlen(s2)) == 0)
+
+/**
  * Simple helper function to check if a string is valid and not empty.
  */
 gboolean installer_is_string_valid(const gchar *str);

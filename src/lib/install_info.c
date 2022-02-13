@@ -253,7 +253,7 @@ void installer_info_set_hostname(InstallerInfo *self, const gchar *value) {
         return;
     }
 
-    if (!installer_is_string_valid((char *) self->hostname)) {
+    if (installer_is_string_valid((char *) self->hostname)) {
         g_free(self->hostname);
     }
 

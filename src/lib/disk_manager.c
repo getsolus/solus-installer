@@ -27,6 +27,31 @@ const gchar *lsb_release_paths[LSB_RELEASE_PATHS_LENGTH] = {
     "usr/share/defaults/etc/lsb-release"
 };
 
+const gchar *os_icons[OS_ICONS_LENGTH] = {
+    "antergos",
+    "archlinux",
+    "crunchbang",
+    "debian",
+    "deepin",
+    "edubuntu",
+    "elementary",
+    "fedora",
+    "frugalware",
+    "gentoo",
+    "kubuntu",
+    "linux-mint",
+    "mageia",
+    "mandriva",
+    "manjaro",
+    "solus",
+    "opensuse",
+    "slackware",
+    "steamos",
+    "ubuntu-gnome",
+    "ubuntu-mate",
+    "ubuntu"
+};
+
 struct _DiskManager {
     GObject parent_instance;
 
@@ -44,8 +69,6 @@ struct _DiskManager {
     gint uefi_fw_size;
     gint host_size;
     GSList *efi_types;
-
-    GSList *os_icons;
 };
 
 G_DEFINE_TYPE(DiskManager, disk_manager, G_TYPE_OBJECT);
@@ -135,31 +158,6 @@ static void disk_manager_init(DiskManager *self) {
     } else {
         self->host_size = 64;
     }
-
-    /* OS icons for populating OsTypes */
-
-    self->os_icons = g_slist_append(self->os_icons, "antergos");
-    self->os_icons = g_slist_append(self->os_icons, "archlinux");
-    self->os_icons = g_slist_append(self->os_icons, "crunchbang");
-    self->os_icons = g_slist_append(self->os_icons, "debian");
-    self->os_icons = g_slist_append(self->os_icons, "deepin");
-    self->os_icons = g_slist_append(self->os_icons, "edubuntu");
-    self->os_icons = g_slist_append(self->os_icons, "elementary");
-    self->os_icons = g_slist_append(self->os_icons, "fedora");
-    self->os_icons = g_slist_append(self->os_icons, "frugalware");
-    self->os_icons = g_slist_append(self->os_icons, "gentoo");
-    self->os_icons = g_slist_append(self->os_icons, "kubuntu");
-    self->os_icons = g_slist_append(self->os_icons, "linux-mint");
-    self->os_icons = g_slist_append(self->os_icons, "mageia");
-    self->os_icons = g_slist_append(self->os_icons, "mandriva");
-    self->os_icons = g_slist_append(self->os_icons, "manjaro");
-    self->os_icons = g_slist_append(self->os_icons, "solus");
-    self->os_icons = g_slist_append(self->os_icons, "opensuse");
-    self->os_icons = g_slist_append(self->os_icons, "slackware");
-    self->os_icons = g_slist_append(self->os_icons, "steamos");
-    self->os_icons = g_slist_append(self->os_icons, "ubuntu-gnome");
-    self->os_icons = g_slist_append(self->os_icons, "ubuntu-mate");
-    self->os_icons = g_slist_append(self->os_icons, "ubuntu");
 }
 
 static void disk_manager_finalize(GObject *obj) {
@@ -173,7 +171,6 @@ static void disk_manager_finalize(GObject *obj) {
     g_hash_table_destroy(self->win_prefixes);
     g_hash_table_destroy(self->win_bootloaders);
     g_slist_free(g_steal_pointer(&self->efi_types));
-    g_slist_free(g_steal_pointer(&self->os_icons));
 
     G_OBJECT_CLASS(disk_manager_parent_class)->finalize(obj);
 }
@@ -629,4 +626,37 @@ gchar *disk_manager_search_for_key(
     }
 
     return name;
+}
+
+gchar *disk_manager_get_os_icon(DiskManager *self, InstallerOS *os) {
+    g_return_val_if_fail(DISK_IS_MANAGER(self), "system-software-install");
+    g_return_val_if_fail(INSTALLER_IS_OS(os), "system-software-install");
+
+    g_autofree gchar *otype = installer_os_get_otype(os);
+
+    // Check the OS type to see if it's Windows or Linux
+    if (strcmp(otype, "windows") == 0 || strcmp(otype, "windows-boot") == 0) {
+        return "distributor-logo-windows";
+    } else if (strcmp(otype, "linux") != 0) {
+        return "system-software-install";
+    }
+
+    // Convert the OS name to lowercase and remove leading/trailing spaces
+    g_autofree gchar *raw = installer_os_get_name(os);
+    raw = g_strstrip(raw);
+    g_autofree gchar *raw_lower = g_utf8_casefold(raw, -1);
+
+    // Turn spaces into hyphens
+    g_autoptr(GString) mangled = g_string_new(raw_lower);
+    g_string_replace(mangled, " ", "-", -1);
+
+    // Look for a matching icon
+    gint i;
+    for (i = 0; i < OS_ICONS_LENGTH; i++) {
+        if (installer_string_starts_with(mangled->str, os_icons[i])) {
+            return g_strdup_printf("distributor-logo-%s", os_icons[i]);
+        }
+    }
+
+    return "system-software-install";
 }

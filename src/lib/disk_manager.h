@@ -16,8 +16,7 @@
 
 #pragma once
 
-#include "utils.h"
-#include <gio/gio.h>
+#include "os.h"
 
 G_BEGIN_DECLS
 
@@ -36,6 +35,10 @@ extern const gchar *os_release_paths[];
  * stateless heirarchy.
  */
 extern const gchar *lsb_release_paths[];
+
+#define OS_ICONS_LENGTH 22
+
+extern const gchar *os_icons[];
 
 #define INSTALLER_TYPE_DISK_MANAGER (disk_manager_get_type())
 
@@ -180,5 +183,7 @@ gchar *disk_manager_search_for_key(
     const gchar *key,
     const gchar *fallback_key
 );
+
+gchar *disk_manager_get_os_icon(DiskManager *self, InstallerOS *os);
 
 G_END_DECLS

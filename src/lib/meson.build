@@ -1,6 +1,7 @@
 installer_lib_sources = [
     'disk_manager.c',
     'install_info.c',
+    'os.c',
     'permissions.c',
     'utils.c'
 ]
