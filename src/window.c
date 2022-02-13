@@ -199,7 +199,7 @@ void installer_window_setup_style(InstallerWindow *self) {
     g_autofree gchar *theme_lower = g_utf8_casefold(theme, -1);
 
     // Check if this is an Arc theme, and apply arc styles
-    if (strncmp("arc", theme_lower, 3) == 0) {
+    if (installer_string_starts_with(theme_lower, "arc")) {
         gtk_style_context_add_class(style_context, "arc-theme");
     }
 }

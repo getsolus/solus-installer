@@ -254,7 +254,7 @@ gboolean disk_manager_is_device_ssd(const gchar *path) {
     }
 
     // Don't try using a SSD with eMMC
-    if (strncmp(nodename, "mmcblk", 6)) {
+    if (installer_string_starts_with(nodename, "mmcblk")) {
         return FALSE;
     }
 
@@ -280,7 +280,7 @@ gboolean disk_manager_is_install_supported(const gchar *path) {
     g_return_val_if_fail(path != NULL, FALSE);
 
     g_autofree gchar *nodename = g_path_get_basename(path);
-    if (strncmp(nodename, "md", 2)) {
+    if (installer_string_starts_with(nodename, "md")) {
         return FALSE;
     }
     return TRUE;
@@ -322,7 +322,7 @@ GHashTable *disk_manager_get_mount_points() {
         gchar *mount_point = parts[1];
 
         // We only want block devices
-        if (strncmp(dev, "/", 1) == 0) {
+        if (installer_string_starts_with(dev, "/")) {
             g_hash_table_insert(ret, dev, mount_point);
         }
 

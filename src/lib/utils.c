@@ -77,7 +77,7 @@ gboolean installer_str_starts_with(gchar *key, __attribute((unused)) gchar *valu
     g_return_val_if_fail(key != NULL, FALSE);
     g_return_val_if_fail(item != NULL, FALSE);
 
-    if (strncmp(key, item, strlen(key)) == 0) {
+    if (installer_string_starts_with(item, key)) {
         return TRUE;
     }
 
