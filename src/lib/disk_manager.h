@@ -21,6 +21,22 @@
 
 G_BEGIN_DECLS
 
+#define OS_RELEASE_PATHS_LENGTH 2
+
+/**
+ * Array of possible paths to an os-release file, respecting
+ * stateless heirarchy.
+ */
+extern const gchar *os_release_paths[];
+
+#define LSB_RELEASE_PATHS_LENGTH 3
+
+/**
+ * Array of possible paths to an lsb-release file, respecting
+ * stateless heirarchy.
+ */
+extern const gchar *lsb_release_paths[];
+
 #define INSTALLER_TYPE_DISK_MANAGER (disk_manager_get_type())
 
 G_DECLARE_FINAL_TYPE(DiskManager, disk_manager, DISK, MANAGER, GObject)
@@ -113,11 +129,15 @@ gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path)
  * key is found. If no match is found, `NULL` is returned. If there
  * was an error reading the file, `NULL` is returned and `err` is set.
  * 
+ * The caller is responsible for checking that the file at the path
+ * exists. If it does not exist, `NULL` will be returned and `err`
+ * will be set.
+ * 
  * Returns a string containing the value for the key, or `NULL` if
  * the key was not found. The caller is responsible for freeing
  * this string.
  */
-gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GError **err);
+gchar *disk_manager_get_os_release_val(const gchar *path, const gchar *find_key, GError **err);
 
 /**
  * Extracts a value from a line in an os-release file if the line's key
@@ -127,6 +147,38 @@ gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GErro
  * the key was not found. The caller is responsible for freeing
  * this string.
  */
-gchar *disk_manager_match_os_release_line(const gchar *line, gchar *find_key);
+gchar *disk_manager_match_os_release_line(const gchar *line, const gchar *find_key);
+
+/**
+ * Attempts to get the reported Linux version for the installation at
+ * the given path.
+ * 
+ * This first looks in the os_release file, moving on to the lsb_release
+ * file if no os_release file is found or the name keys aren't set, respecting
+ * stateless heirarchy.
+ * 
+ * Returns a string containing the reported Linux version, or `NULL` if it
+ * could not be found. The caller is responsible for freeing this string.
+ */
+gchar *disk_manager_get_linux_version(const gchar *path);
+
+/**
+ * Attempts to get a value from a file with a key.
+ * 
+ * This function takes an array of paths to look in to try to find the matching
+ * key, falling back to each progressive path if a value is not found. Additionally,
+ * the function takes a fallback key in case the file being read exists, but the
+ * first key is not present or set.
+ * 
+ * Returns a string containing the value for the key, or `NULL` if it could not
+ * be found. The caller is responsible for freeing this string.
+ */
+gchar *disk_manager_search_for_key(
+    const gchar *root,
+    const gchar **paths,
+    gint paths_len,
+    const gchar *key,
+    const gchar *fallback_key
+);
 
 G_END_DECLS

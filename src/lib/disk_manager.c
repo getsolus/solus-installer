@@ -16,6 +16,17 @@
 
 #include "disk_manager.h"
 
+const gchar *os_release_paths[OS_RELEASE_PATHS_LENGTH] = {
+    "etc/os-release",
+    "usr/lib/os-release"
+};
+
+const gchar *lsb_release_paths[LSB_RELEASE_PATHS_LENGTH] = {
+    "etc/lsb-release",
+    "usr/lib/lsb-release",
+    "usr/share/defaults/etc/lsb-release"
+};
+
 struct _DiskManager {
     GObject parent_instance;
 
@@ -459,7 +470,7 @@ gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path)
     return "Windows bootloader";
 }
 
-gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GError **err) {
+gchar *disk_manager_get_os_release_val(const gchar *path, const gchar *find_key, GError **err) {
     g_autoptr(GFile) file = g_file_new_for_path(path);
     g_autoptr(GFileInputStream) input_stream = g_file_read(file, NULL, err);
     if (!G_IS_FILE_INPUT_STREAM(input_stream)) {
@@ -495,7 +506,7 @@ gchar *disk_manager_get_os_release_val(const gchar *path, gchar *find_key, GErro
     return g_strdup(val);
 }
 
-gchar *disk_manager_match_os_release_line(const gchar *line, gchar *find_key) {
+gchar *disk_manager_match_os_release_line(const gchar *line, const gchar *find_key) {
     // Split the line into parts
     g_autofree GStrv parts = g_strsplit(line, "=", 2);
     g_autofree gchar *key = parts[0];
@@ -528,4 +539,71 @@ gchar *disk_manager_match_os_release_line(const gchar *line, gchar *find_key) {
 
     // This line doesn't match the given key
     return NULL;
+}
+
+gchar *disk_manager_get_linux_version(const gchar *path) {
+    g_return_val_if_fail(path != NULL, NULL);
+
+    // Iterate os-release files and then fallback to lsb-release files,
+    // respecting stateless heirarchy
+    gchar *name = disk_manager_search_for_key(path, os_release_paths, OS_RELEASE_PATHS_LENGTH, "PRETTY_NAME", "NAME");
+
+    // Check that we have a name. If we don't, start looking at the
+    // lsb_release files.
+    if (!installer_is_string_valid(name)) {
+        name = disk_manager_search_for_key(path, lsb_release_paths, LSB_RELEASE_PATHS_LENGTH, "DISTRIB_DESCRIPTION", "DISTRIB_ID");
+    }
+
+    return name;
+}
+
+gchar *disk_manager_search_for_key(
+    const gchar *root,
+    const gchar **paths,
+    gint paths_len,
+    const gchar *key,
+    const gchar *fallback_key
+) {
+    // Sanity checks
+    g_return_val_if_fail(root != NULL, NULL);
+    g_return_val_if_fail(paths != NULL, NULL);
+    g_return_val_if_fail(paths_len > 0, NULL);
+    g_return_val_if_fail(key != NULL, NULL);
+
+    gchar *name = NULL;
+    gint i;
+
+    // Iterate over our paths
+    for (i = 0; i < paths_len; i++) {
+        g_autofree gchar *fpath = g_build_path(G_DIR_SEPARATOR_S, root, paths[i], NULL);
+        g_autoptr(GFile) file = g_file_new_for_path(fpath);
+        if (!g_file_query_exists(file, NULL)) {
+            continue;
+        }
+
+        // First, try to get the value of the first key we were given
+        g_autoptr(GError) err = NULL;
+        name = disk_manager_get_os_release_val(fpath, key, &err);
+        if (err) {
+            g_warning("Error reading lsb_release file at path '%s': %s", fpath, err->message);
+            g_error_free(err);
+            err = NULL;
+        }
+
+        // If the first key was not found or set, try using the fallback key if
+        // we were given one.
+        if (!installer_is_string_valid(name) && installer_is_string_valid(fallback_key)) {
+            name = disk_manager_get_os_release_val(fpath, fallback_key, &err);
+            if (err) {
+                g_warning("Error reading lsb_release file at path '%s': %s", fpath, err->message);
+            }
+        }
+
+        // Still no name, try the next iteration
+        if (!installer_is_string_valid(name)) {
+            continue;
+        }
+    }
+
+    return name;
 }
