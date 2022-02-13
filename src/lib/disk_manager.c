@@ -229,6 +229,9 @@ void disk_manager_scan_parts(DiskManager *self) {
 }
 
 void disk_manager_append_device(DiskManager *self, gchar *device) {
+    g_return_if_fail(DISK_IS_MANAGER(self));
+    g_return_if_fail(device != NULL);
+
     g_autofree gchar *path = g_build_path(G_DIR_SEPARATOR_S, "/dev/", device, NULL);
 
     g_autoptr(GFile) file = g_file_new_for_path(path);
@@ -243,6 +246,8 @@ void disk_manager_append_device(DiskManager *self, gchar *device) {
 }
 
 gboolean disk_manager_is_device_ssd(const gchar *path) {
+    g_return_val_if_fail(path != NULL, FALSE);
+
     g_autofree gchar *nodename = g_path_get_basename(path);
     g_autofree gchar *fpath = g_strdup_printf("/sys/block/%s/queue/rotational", nodename);
 
@@ -275,6 +280,8 @@ gboolean disk_manager_is_device_ssd(const gchar *path) {
 }
 
 gboolean disk_manager_is_install_supported(const gchar *path) {
+    g_return_val_if_fail(path != NULL, FALSE);
+
     g_autofree gchar *nodename = g_path_get_basename(path);
     if (strncmp(nodename, "md", 2)) {
         return FALSE;
@@ -335,6 +342,10 @@ gboolean disk_manager_mount_device(
     gchar *options,
     GError **err
 ) {
+    g_return_val_if_fail(device != NULL, FALSE);
+    g_return_val_if_fail(mpoint != NULL, FALSE);
+    g_return_val_if_fail(fsystem != NULL, FALSE);
+
     g_autoptr(GSubprocess) proc = NULL;
     if (options) {
         proc = g_subprocess_new(
@@ -367,6 +378,8 @@ gboolean disk_manager_mount_device(
 }
 
 gboolean disk_manager_umount_device(const gchar *mpoint, GError **err) {
+    g_return_val_if_fail(mpoint != NULL, FALSE);
+
     g_autoptr(GSubprocess) proc = g_subprocess_new(
         G_SUBPROCESS_FLAGS_NONE,
         err,
@@ -410,6 +423,8 @@ gchar *disk_manager_get_windows_version(DiskManager *self, const gchar *path, GE
     if (!DISK_IS_MANAGER(self)) {
         return NULL;
     }
+
+    g_return_val_if_fail(path != NULL, NULL);
 
     g_autofree gchar *fpath = g_build_path(G_DIR_SEPARATOR_S, path, "Windows", "servicing", "Version", NULL);
     g_autoptr(GFile) version_file = g_file_new_for_path(fpath);
@@ -455,6 +470,8 @@ gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path)
         return NULL;
     }
 
+    g_return_val_if_fail(path != NULL, NULL);
+
     g_autofree gchar *fpath = g_build_path(G_DIR_SEPARATOR_S, path, "Boot", "BCD", NULL);
     g_autoptr(GFile) file = g_file_new_for_path(fpath);
 
@@ -471,6 +488,9 @@ gchar *disk_manager_get_windows_bootloader(DiskManager *self, const gchar *path)
 }
 
 gchar *disk_manager_get_os_release_val(const gchar *path, const gchar *find_key, GError **err) {
+    g_return_val_if_fail(path != NULL, NULL);
+    g_return_val_if_fail(find_key != NULL, NULL);
+
     g_autoptr(GFile) file = g_file_new_for_path(path);
     g_autoptr(GFileInputStream) input_stream = g_file_read(file, NULL, err);
     if (!G_IS_FILE_INPUT_STREAM(input_stream)) {
@@ -507,6 +527,9 @@ gchar *disk_manager_get_os_release_val(const gchar *path, const gchar *find_key,
 }
 
 gchar *disk_manager_match_os_release_line(const gchar *line, const gchar *find_key) {
+    g_return_val_if_fail(line != NULL, NULL);
+    g_return_val_if_fail(find_key != NULL, NULL);
+
     // Split the line into parts
     g_autofree GStrv parts = g_strsplit(line, "=", 2);
     g_autofree gchar *key = parts[0];

@@ -82,6 +82,8 @@ PermissionsManager *permissions_manager_new() {
 }
 
 void permissions_manager_set_details(PermissionsManager *self) {
+    g_return_if_fail(PERMISSIONS_IS_MANAGER(self));
+
     struct passwd *pw = getpwuid(self->down_uid);
 
     if (!pw) {
@@ -93,9 +95,7 @@ void permissions_manager_set_details(PermissionsManager *self) {
 }
 
 gboolean permissions_manager_down_permissions(PermissionsManager *self) {
-    if (!PERMISSIONS_IS_MANAGER(self)) {
-        return FALSE;
-    }
+    g_return_val_if_fail(PERMISSIONS_IS_MANAGER(self), FALSE);
 
     int result = setresgid(self->down_gid, self->down_gid, 0);
     if (result != 0) {
@@ -117,9 +117,7 @@ gboolean permissions_manager_down_permissions(PermissionsManager *self) {
 }
 
 gboolean permissions_manager_up_permissions(PermissionsManager *self) {
-    if (!PERMISSIONS_IS_MANAGER(self)) {
-        return FALSE;
-    }
+    g_return_val_if_fail(PERMISSIONS_IS_MANAGER(self), FALSE);
 
     int result = setresgid(0, 0, 0);
     if (result != 0) {

@@ -63,6 +63,9 @@ gchar *installer_read_line_full(GFile *file, GError **err) {
 }
 
 gboolean installer_str_contains(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
+    g_return_val_if_fail(key != NULL, FALSE);
+    g_return_val_if_fail(item != NULL, FALSE);
+
     if (g_strstr_len(item, -1, key)) {
         return TRUE;
     }
@@ -71,6 +74,9 @@ gboolean installer_str_contains(gchar *key, __attribute((unused)) gchar *value, 
 }
 
 gboolean installer_str_starts_with(gchar *key, __attribute((unused)) gchar *value, gchar *item) {
+    g_return_val_if_fail(key != NULL, FALSE);
+    g_return_val_if_fail(item != NULL, FALSE);
+
     if (strncmp(key, item, strlen(key)) == 0) {
         return TRUE;
     }
