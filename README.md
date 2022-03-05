@@ -31,7 +31,7 @@ The current `os-installer` project has lived to the natural conclusion of its us
 
 ## License
 
-Copyright 2021 Solus Project <copyright@getsol.us>
+Copyright 2021-2022 Solus Project <copyright@getsol.us>
  
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

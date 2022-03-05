@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include "lib/utils.h"
+#include "lib/installer.h"
 #include "window.h"
 
 GtkWindow *main_window;

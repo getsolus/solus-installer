@@ -1,10 +1,21 @@
+installer_lib_headers = [
+    'disk_manager.h',
+    'installer.h',
+    'install_info.h',
+    'os.h',
+    'permissions.h',
+    'strings.h',
+    'system_partition.h'
+]
+
 installer_lib_sources = [
     'disk_manager.c',
+    'installer.c',
     'install_info.c',
     'os.c',
     'permissions.c',
-    'system_partition.c',
-    'utils.c'
+    'strings.c',
+    'system_partition.c'
 ]
 
 installer_lib_deps = [
@@ -19,6 +30,8 @@ os_installer_lib = shared_library(
     dependencies: installer_lib_deps,
     install: true
 )
+
+install_headers(installer_lib_headers, subdir: 'solusinstaller')
 
 link_installer_lib = declare_dependency(
     link_with: os_installer_lib,

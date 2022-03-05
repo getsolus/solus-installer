@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "utils.h"
+#include "strings.h"
 
 G_BEGIN_DECLS
 

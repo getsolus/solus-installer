@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "utils.h"
+#include "strings.h"
 #include <blockdev/fs.h>
 #include <blockdev/part.h>
 #include <sys/statvfs.h>

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "utils.h"
+#include "strings.h"
 #include <pwd.h>
 
 G_BEGIN_DECLS
