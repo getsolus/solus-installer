@@ -14,12 +14,24 @@
 // limitations under the License.
 //
 
+#include "lib/utils.h"
 #include "window.h"
 
 GtkWindow *main_window;
 
 static void on_activate(GtkApplication *app) {
     g_assert(GTK_IS_APPLICATION(app));
+
+    g_autoptr(GError) err = NULL;
+    if (!installer_init_blockdev(&err)) {
+        if (err) {
+            g_critical("Error initializing blockdev library: %s", err->message);
+        } else {
+            g_critical("Error initializing blockdev library: unknown error");
+        }
+
+        return;
+    }
 
     main_window = gtk_application_get_active_window(app);
     if (main_window == NULL) {

@@ -3,12 +3,14 @@ installer_lib_sources = [
     'install_info.c',
     'os.c',
     'permissions.c',
+    'system_partition.c',
     'utils.c'
 ]
 
 installer_lib_deps = [
     dependency('glib-2.0', version: '>= 2.66'),
-    dependency('gio-2.0', version: '>= 2.66')
+    dependency('gio-2.0', version: '>= 2.66'),
+    dependency('blockdev', version: '>= 2.23')
 ]
 
 os_installer_lib = shared_library(

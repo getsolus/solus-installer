@@ -19,6 +19,7 @@
 #include <gio/gio.h>
 #include <glib/gerror.h>
 #include <glib/gtypes.h>
+#include <blockdev/blockdev.h>
 
 /**
  * Check if `s1` starts with `s2`.
@@ -26,6 +27,27 @@
  * This expands to a call to `strncmp` to compare the strings.
  */
 #define installer_string_starts_with(s1, s2) (strncmp(s1, s2, strlen(s2)) == 0)
+
+/**
+ * Creates a new temporary directory.
+ * 
+ * This directory may be created with an optional suffix. The first
+ * portion of the directory name will be automatically generated to
+ * ensure uniqueness.
+ * 
+ * Returns a string containing the name of the directory, or `NULL`.
+ * If there was an error, `NULL` will be returned and `err` will be
+ * set.
+ */
+gchar *installer_create_temp_dir(gchar *suffix, GError **err);
+
+/**
+ * Attempt to initialize the blockdev library with our required plugins.
+ * 
+ * Returns `TRUE` if initialization was successful. If there was an error,
+ * `FALSE` is returned and `err` is set.
+ */
+gboolean installer_init_blockdev(GError **err);
 
 /**
  * Simple helper function to check if a string is valid and not empty.
