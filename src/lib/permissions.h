@@ -21,28 +21,23 @@
 
 G_BEGIN_DECLS
 
-#define INSTALLER_TYPE_PERMISSIONS_MANAGER (permissions_manager_get_type())
+#define INSTALLER_TYPE_PERMISSIONS (installer_permissions_get_type())
 
-G_DECLARE_FINAL_TYPE(PermissionsManager, permissions_manager, PERMISSIONS, MANAGER, GObject)
+G_DECLARE_FINAL_TYPE(InstallerPermissions, installer_permissions, INSTALLER, PERMISSIONS, GObject)
 
 /**
  * Create a new PermissionsManager object.
  */
-PermissionsManager *permissions_manager_new();
-
-/**
- * Set the home directory.
- */
-void permissions_manager_set_details(PermissionsManager *self);
+InstallerPermissions *installer_permissions_new();
 
 /**
  * Drop our current permissions.
  */
-gboolean permissions_manager_down_permissions(PermissionsManager *self);
+gboolean installer_permissions_drop(InstallerPermissions *self);
 
 /**
  * Elevate our current permissions.
  */
-gboolean permissions_manager_up_permissions(PermissionsManager *self);
+gboolean installer_permissions_elevate(InstallerPermissions *self);
 
 G_END_DECLS

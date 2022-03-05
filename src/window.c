@@ -36,7 +36,7 @@ struct _InstallerWindow {
     GtkWidget *next_button;
 
     InstallerInfo *info;
-    PermissionsManager *perms;
+    InstallerPermissions *perms;
     DiskManager *disk_manager;
 
     GSList *pages;
@@ -152,7 +152,7 @@ static void installer_window_init(InstallerWindow *self) {
 
     installer_window_buttons_update_sensitivity(self);
 
-    self->perms = permissions_manager_new();
+    self->perms = installer_permissions_new();
     self->disk_manager = disk_manager_new();
     disk_manager_scan_parts(self->disk_manager);
 
