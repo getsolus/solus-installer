@@ -3,9 +3,9 @@ installer_lib_headers = [
     'installer.h',
     'install_info.h',
     'os.h',
+    'partition.h',
     'permissions.h',
-    'strings.h',
-    'system_partition.h'
+    'strings.h'
 ]
 
 installer_lib_sources = [
@@ -13,9 +13,9 @@ installer_lib_sources = [
     'installer.c',
     'install_info.c',
     'os.c',
+    'partition.c',
     'permissions.c',
-    'strings.c',
-    'system_partition.c'
+    'strings.c'
 ]
 
 installer_lib_deps = [

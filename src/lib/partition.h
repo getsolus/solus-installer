@@ -23,9 +23,9 @@
 
 G_BEGIN_DECLS
 
-#define INSTALLER_TYPE_SYSTEM_PARTITION (installer_system_partition_get_type())
+#define INSTALLER_TYPE_PARTITION (installer_partition_get_type())
 
-G_DECLARE_FINAL_TYPE(InstallerSystemPartition, installer_system_partition, INSTALLER, SYSTEM_PARTITION, GObject)
+G_DECLARE_FINAL_TYPE(InstallerPartition, installer_partition, INSTALLER, PARTITION, GObject)
 
 /**
  * Create a new partition wrapper struct.
@@ -36,7 +36,7 @@ G_DECLARE_FINAL_TYPE(InstallerSystemPartition, installer_system_partition, INSTA
  * 
  * Free the returned struct with `g_object_unref()`.
  */
-InstallerSystemPartition *installer_system_partition_new(
+InstallerPartition *installer_partition_new(
     const gchar *disk,
     const gchar *part,
     gchar *mount_point,
@@ -48,59 +48,59 @@ InstallerSystemPartition *installer_system_partition_new(
  * 
  * The caller is responsible for freeing this string.
  */
-const gchar *installer_system_partition_get_disk(InstallerSystemPartition *self);
+const gchar *installer_partition_get_disk(InstallerPartition *self);
 
 /**
  * Get the name of this partition.
  * 
  * The caller is responsible for freeing this string.
  */
-const gchar *installer_system_partition_get_partition(InstallerSystemPartition *self);
+const gchar *installer_partition_get_partition(InstallerPartition *self);
 
 /**
  * Get the path to this partition.
  * 
  * The caller is responsible for freeing this string.
  */
-const gchar *installer_system_partition_get_path(InstallerSystemPartition *self);
+const gchar *installer_partition_get_path(InstallerPartition *self);
 
 /**
  * Get whether or not this partition can be resized.
  */
-gboolean installer_system_partition_is_resizable(InstallerSystemPartition *self);
+gboolean installer_partition_is_resizable(InstallerPartition *self);
 
 /**
  * Get the amount of free space left on this partition.
  */
-guint64 installer_system_partition_get_freespace(InstallerSystemPartition *self);
+guint64 installer_partition_get_freespace(InstallerPartition *self);
 
 /**
  * Get the total space on this partition.
  */
-guint64 installer_system_partition_get_totalspace(InstallerSystemPartition *self);
+guint64 installer_partition_get_totalspace(InstallerPartition *self);
 
 /**
  * Get the amount of used space on this partition.
  */
-guint64 installer_system_partition_get_usedspace(InstallerSystemPartition *self);
+guint64 installer_partition_get_usedspace(InstallerPartition *self);
 
 /**
  * Get the size of this partition.
  */
-guint64 installer_system_partition_get_size(InstallerSystemPartition *self);
+guint64 installer_partition_get_size(InstallerPartition *self);
 
 /**
  * Set the disk this partition is on.
  * 
  * This value cannot be `NULL` or empty.
  */
-void installer_system_partition_set_disk(InstallerSystemPartition *self, const gchar *value);
+void installer_partition_set_disk(InstallerPartition *self, const gchar *value);
 
 /**
  * Set the name of this partition.
  * 
  * This value cannot be `NULL` or empty.
  */
-void installer_system_partition_set_partition(InstallerSystemPartition *self, const gchar *value);
+void installer_partition_set_partition(InstallerPartition *self, const gchar *value);
 
 G_END_DECLS

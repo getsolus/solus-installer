@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include "system_partition.h"
+#include "partition.h"
 
 enum {
     PROP_EXP_0,
@@ -25,7 +25,7 @@ enum {
 
 static GParamSpec *props[N_EXP_PROPERTIES] = {NULL};
 
-struct _InstallerSystemPartition {
+struct _InstallerPartition {
     GObject parent_instance;
 
     const gchar *disk;
@@ -40,17 +40,17 @@ struct _InstallerSystemPartition {
     guint64 size;
 };
 
-G_DEFINE_TYPE(InstallerSystemPartition, installer_system_partition, G_TYPE_OBJECT);
+G_DEFINE_TYPE(InstallerPartition, installer_partition, G_TYPE_OBJECT);
 
-static void installer_system_partition_finalize(GObject *obj);
-static void installer_system_partition_get_property(GObject *obj, guint prop_id, GValue *val, GParamSpec *spec);
-static void installer_system_partition_set_property(GObject *obj, guint prop_id, const GValue *val, GParamSpec *spec);
+static void installer_partition_finalize(GObject *obj);
+static void installer_partition_get_property(GObject *obj, guint prop_id, GValue *val, GParamSpec *spec);
+static void installer_partition_set_property(GObject *obj, guint prop_id, const GValue *val, GParamSpec *spec);
 
-static void installer_system_partition_class_init(InstallerSystemPartitionClass *klass) {
+static void installer_partition_class_init(InstallerPartitionClass *klass) {
     GObjectClass *class = G_OBJECT_CLASS(klass);
-    class->finalize = installer_system_partition_finalize;
-    class->get_property = installer_system_partition_get_property;
-    class->set_property = installer_system_partition_set_property;
+    class->finalize = installer_partition_finalize;
+    class->get_property = installer_partition_get_property;
+    class->set_property = installer_partition_set_property;
 
     props[PROP_DISK] = g_param_spec_string(
         "disk",
@@ -71,31 +71,31 @@ static void installer_system_partition_class_init(InstallerSystemPartitionClass 
     g_object_class_install_properties(class, N_EXP_PROPERTIES, props);
 }
 
-static void installer_system_partition_init(InstallerSystemPartition *self) {
+static void installer_partition_init(InstallerPartition *self) {
     (void) self;
 }
 
-static void installer_system_partition_finalize(GObject *obj) {
-    InstallerSystemPartition *self = INSTALLER_SYSTEM_PARTITION(obj);
+static void installer_partition_finalize(GObject *obj) {
+    InstallerPartition *self = INSTALLER_PARTITION(obj);
 
     g_free((gchar *) self->disk);
     g_free((gchar *) self->partition);
     g_free((gchar *) self->path);
 
-    G_OBJECT_CLASS(installer_system_partition_parent_class)->finalize(obj);
+    G_OBJECT_CLASS(installer_partition_parent_class)->finalize(obj);
 }
 
-static void installer_system_partition_get_property(GObject *obj, guint prop_id, GValue *val, GParamSpec *spec) {
-    InstallerSystemPartition *self = INSTALLER_SYSTEM_PARTITION(obj);
+static void installer_partition_get_property(GObject *obj, guint prop_id, GValue *val, GParamSpec *spec) {
+    InstallerPartition *self = INSTALLER_PARTITION(obj);
 
     switch (prop_id)
     {
     case PROP_DISK:
-        g_value_set_string(val, installer_system_partition_get_disk(self));
+        g_value_set_string(val, installer_partition_get_disk(self));
         break;
 
     case PROP_PARTITION:
-        g_value_set_string(val, installer_system_partition_get_partition(self));
+        g_value_set_string(val, installer_partition_get_partition(self));
         break;
 
     default:
@@ -104,17 +104,17 @@ static void installer_system_partition_get_property(GObject *obj, guint prop_id,
     }
 }
 
-static void installer_system_partition_set_property(GObject *obj, guint prop_id, const GValue *val, GParamSpec *spec) {
-    InstallerSystemPartition *self = INSTALLER_SYSTEM_PARTITION(obj);
+static void installer_partition_set_property(GObject *obj, guint prop_id, const GValue *val, GParamSpec *spec) {
+    InstallerPartition *self = INSTALLER_PARTITION(obj);
 
     switch (prop_id)
     {
     case PROP_DISK:
-        installer_system_partition_set_disk(self, g_value_dup_string(val));
+        installer_partition_set_disk(self, g_value_dup_string(val));
         break;
 
     case PROP_PARTITION:
-        installer_system_partition_set_partition(self, g_value_dup_string(val));
+        installer_partition_set_partition(self, g_value_dup_string(val));
         break;
 
     default:
@@ -123,24 +123,24 @@ static void installer_system_partition_set_property(GObject *obj, guint prop_id,
     }
 }
 
-InstallerSystemPartition *installer_system_partition_new(
+InstallerPartition *installer_partition_new(
     const gchar *disk,
     const gchar *part,
     gchar *mount_point,
     GError **err
 ) {
     GObject *obj = g_object_new(
-        INSTALLER_TYPE_SYSTEM_PARTITION,
+        INSTALLER_TYPE_PARTITION,
         "disk", disk,
         "partition", part,
         NULL
     );
 
-    if (!INSTALLER_IS_SYSTEM_PARTITION(obj)) {
+    if (!INSTALLER_IS_PARTITION(obj)) {
         return NULL;
     }
 
-    InstallerSystemPartition *self = INSTALLER_SYSTEM_PARTITION(obj);
+    InstallerPartition *self = INSTALLER_PARTITION(obj);
 
     // Get the partition spec from libblockdev
     BDPartSpec *part_spec = bd_part_get_part_spec(self->disk, self->partition, err);
@@ -194,56 +194,56 @@ InstallerSystemPartition *installer_system_partition_new(
     return self;
 }
 
-const gchar *installer_system_partition_get_disk(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), NULL);
+const gchar *installer_partition_get_disk(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), NULL);
 
     return g_strdup(self->disk);
 }
 
-const gchar *installer_system_partition_get_partition(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), NULL);
+const gchar *installer_partition_get_partition(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), NULL);
 
     return g_strdup(self->partition);
 }
 
-const gchar *installer_system_partition_get_path(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), NULL);
+const gchar *installer_partition_get_path(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), NULL);
 
     return g_strdup(self->path);
 }
 
-gboolean installer_system_partition_is_resizable(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), FALSE);
+gboolean installer_partition_is_resizable(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), FALSE);
 
     return self->resizeable;
 }
 
-guint64 installer_system_partition_get_freespace(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), 0);
+guint64 installer_partition_get_freespace(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), 0);
 
     return self->freespace;
 }
 
-guint64 installer_system_partition_get_totalspace(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), 0);
+guint64 installer_partition_get_totalspace(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), 0);
 
     return self->totalspace;
 }
 
-guint64 installer_system_partition_get_usedspace(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), 0);
+guint64 installer_partition_get_usedspace(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), 0);
 
     return self->usedspace;
 }
 
-guint64 installer_system_partition_get_size(InstallerSystemPartition *self) {
-    g_return_val_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self), 0);
+guint64 installer_partition_get_size(InstallerPartition *self) {
+    g_return_val_if_fail(INSTALLER_IS_PARTITION(self), 0);
 
     return self->size;
 }
 
-void installer_system_partition_set_disk(InstallerSystemPartition *self, const gchar *value) {
-    g_return_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self));
+void installer_partition_set_disk(InstallerPartition *self, const gchar *value) {
+    g_return_if_fail(INSTALLER_IS_PARTITION(self));
 
     if (!installer_is_string_valid(value)) {
         return;
@@ -258,8 +258,8 @@ void installer_system_partition_set_disk(InstallerSystemPartition *self, const g
     g_object_notify_by_pspec(G_OBJECT(self), props[PROP_DISK]);
 }
 
-void installer_system_partition_set_partition(InstallerSystemPartition *self, const gchar *value) {
-    g_return_if_fail(INSTALLER_IS_SYSTEM_PARTITION(self));
+void installer_partition_set_partition(InstallerPartition *self, const gchar *value) {
+    g_return_if_fail(INSTALLER_IS_PARTITION(self));
 
     if (!installer_is_string_valid(value)) {
         return;
