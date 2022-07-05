@@ -14,10 +14,12 @@
 // limitations under the License.
 //
 
-#pragma once
+#ifndef INSTALLER_WINDOW_H
+#define INSTALLER_WINDOW_H
 
 #include "lib/disk_manager.h"
 #include "lib/install_info.h"
+#include "lib/partition.h"
 #include "lib/permissions.h"
 #include <gtk/gtk.h>
 
@@ -25,7 +27,8 @@ G_BEGIN_DECLS
 
 #define INSTALLER_TYPE_WINDOW (installer_window_get_type())
 
-G_DECLARE_FINAL_TYPE(InstallerWindow, installer_window, INSTALLER, WINDOW, GtkApplicationWindow)
+G_DECLARE_FINAL_TYPE(InstallerWindow, installer_window, INSTALLER, WINDOW,
+                     GtkApplicationWindow)
 
 /**
  * Set up our application styling.
@@ -33,9 +36,11 @@ G_DECLARE_FINAL_TYPE(InstallerWindow, installer_window, INSTALLER, WINDOW, GtkAp
 void installer_window_setup_style(InstallerWindow *self);
 
 /**
- * Set the name of the icon name and label text to use for the current Solus edition.
- * 
- * This works by checking for each desktop binary, and exiting when one is found.
+ * Set the name of the icon name and label text to use for the current Solus
+ * edition.
+ *
+ * This works by checking for each desktop binary, and exiting when one is
+ * found.
  */
 void installer_window_set_vanity(InstallerWindow *self);
 
@@ -95,3 +100,5 @@ void installer_window_set_is_final(InstallerWindow *self, gboolean is_final);
 void installer_window_set_can_quit(InstallerWindow *self, gboolean can_quit);
 
 G_END_DECLS
+
+#endif

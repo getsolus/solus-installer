@@ -14,9 +14,11 @@
 // limitations under the License.
 //
 
-#pragma once
+#ifndef INSTALLER_INFO_H
+#define INSTALLER_INFO_H
 
-#include "strings.h"
+#include <gio/gio.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -36,7 +38,7 @@ gboolean installer_info_get_enable_geoip(InstallerInfo *self);
 
 /**
  * Get the hostname for the installation.
- * 
+ *
  * The caller is expected to free the return value of this function.
  */
 gchar *installer_info_get_hostname(InstallerInfo *self);
@@ -54,3 +56,5 @@ void installer_info_set_install_bootloader(InstallerInfo *self, gboolean value);
 void installer_info_set_invalidated(InstallerInfo *self, gboolean value);
 
 G_END_DECLS
+
+#endif

@@ -20,49 +20,43 @@
 GtkWindow *main_window;
 
 static void on_activate(GtkApplication *app) {
-    g_assert(GTK_IS_APPLICATION(app));
+  g_assert(GTK_IS_APPLICATION(app));
 
-    g_autoptr(GError) err = NULL;
-    if (!installer_init_blockdev(&err)) {
-        if (err) {
-            g_critical("Error initializing blockdev library: %s", err->message);
-        } else {
-            g_critical("Error initializing blockdev library: unknown error");
-        }
-
-        return;
+  g_autoptr(GError) err = NULL;
+  if (!installer_init_blockdev(&err)) {
+    if (err) {
+      g_critical("Error initializing blockdev library: %s", err->message);
+    } else {
+      g_critical("Error initializing blockdev library: unknown error");
     }
 
-    main_window = gtk_application_get_active_window(app);
-    if (main_window == NULL) {
-        main_window = g_object_new(INSTALLER_TYPE_WINDOW,
-                                   "application", app,
-                                   "default-width", 768,
-                                   "default-height", 500,
-                                   NULL);
-    }
+    return;
+  }
 
-    gtk_widget_show_all(GTK_WIDGET(main_window));
+  main_window = gtk_application_get_active_window(app);
+  if (main_window == NULL) {
+    main_window =
+        g_object_new(INSTALLER_TYPE_WINDOW, "application", app, "default-width",
+                     768, "default-height", 500, NULL);
+  }
+
+  gtk_widget_show_all(GTK_WIDGET(main_window));
 }
 
-static void on_shutdown(GtkApplication *app) {
-    (void) app;
-}
+static void on_shutdown(GtkApplication *app) { (void)app; }
 
 int main(int argc, char *argv[]) {
-    GtkApplication *app = gtk_application_new(
-        "us.getsol.Installer",
-        G_APPLICATION_FLAGS_NONE
-    );
+  GtkApplication *app =
+      gtk_application_new("us.getsol.Installer", G_APPLICATION_FLAGS_NONE);
 
-    g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
-    g_signal_connect(app, "shutdown", G_CALLBACK(on_shutdown), NULL);
+  g_signal_connect(app, "activate", G_CALLBACK(on_activate), NULL);
+  g_signal_connect(app, "shutdown", G_CALLBACK(on_shutdown), NULL);
 
-    gtk_init(&argc, &argv);
+  gtk_init(&argc, &argv);
 
-    int status = g_application_run(G_APPLICATION(app), argc, argv);
+  int status = g_application_run(G_APPLICATION(app), argc, argv);
 
-    // Cleanup
-    g_object_unref(app);
-    return status;
+  // Cleanup
+  g_object_unref(app);
+  return status;
 }

@@ -14,9 +14,11 @@
 // limitations under the License.
 //
 
-#pragma once
+#ifndef INSTALLER_OS_H
+#define INSTALLER_OS_H
 
-#include "strings.h"
+#include <gio/gio.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -27,32 +29,33 @@ G_DECLARE_FINAL_TYPE(InstallerOS, installer_os, INSTALLER, OS, GObject)
 /**
  * Create a new object for information about an operating system.
  */
-InstallerOS *installer_os_new(gchar *otype, gchar *name, const gchar *device_path);
+InstallerOS *installer_os_new(gchar *otype, gchar *name,
+                              const gchar *device_path);
 
 /**
  * Get the type of this OS.
- * 
+ *
  * The caller is responsible for freeing this string.
  */
 gchar *installer_os_get_otype(InstallerOS *self);
 
 /**
  * Get the name of this OS.
- * 
+ *
  * The caller is responsible for freeing this string.
  */
 gchar *installer_os_get_name(InstallerOS *self);
 
 /**
  * Get the path to the device this OS is installed on.
- * 
+ *
  * The caller is responsible for freeing this string.
  */
 const gchar *installer_os_get_device_path(InstallerOS *self);
 
 /**
  * Get the icon name for this OS.
- * 
+ *
  * The caller is responsible for freeing this string.
  */
 gchar *installer_os_get_icon_name(InstallerOS *self);
@@ -78,3 +81,5 @@ void installer_os_set_device_path(InstallerOS *self, const gchar *value);
 void installer_os_set_icon_name(InstallerOS *self, const gchar *value);
 
 G_END_DECLS
+
+#endif

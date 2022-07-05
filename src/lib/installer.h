@@ -14,15 +14,15 @@
 // limitations under the License.
 //
 
-#pragma once
+#ifndef INSTALLER_H
+#define INSTALLER_H
 
-#include "strings.h"
-#include <glib.h>
 #include <blockdev/blockdev.h>
+#include <glib.h>
 
 /**
  * Attempt to initialize the blockdev library with our required plugins.
- * 
+ *
  * Returns `TRUE` if initialization was successful. If there was an error,
  * `FALSE` is returned and `err` is set.
  */
@@ -35,13 +35,15 @@ gchar *installer_errno_to_message(GIOErrorEnum errnum);
 
 /**
  * Creates a new temporary directory.
- * 
+ *
  * This directory may be created with an optional suffix. The first
  * portion of the directory name will be automatically generated to
  * ensure uniqueness.
- * 
+ *
  * Returns a string containing the name of the directory, or `NULL`.
  * If there was an error, `NULL` will be returned and `err` will be
  * set.
  */
 gchar *installer_create_temp_dir(gchar *suffix, GError **err);
+
+#endif

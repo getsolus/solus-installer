@@ -14,16 +14,19 @@
 // limitations under the License.
 //
 
-#pragma once
+#ifndef INSTALLER_PERMISSIONS_H
+#define INSTALLER_PERMISSIONS_H
 
-#include "strings.h"
+#include <gio/gio.h>
+#include <glib.h>
 #include <pwd.h>
 
 G_BEGIN_DECLS
 
 #define INSTALLER_TYPE_PERMISSIONS (installer_permissions_get_type())
 
-G_DECLARE_FINAL_TYPE(InstallerPermissions, installer_permissions, INSTALLER, PERMISSIONS, GObject)
+G_DECLARE_FINAL_TYPE(InstallerPermissions, installer_permissions, INSTALLER,
+                     PERMISSIONS, GObject)
 
 /**
  * Create a new PermissionsManager object.
@@ -41,3 +44,5 @@ gboolean installer_permissions_drop(InstallerPermissions *self);
 gboolean installer_permissions_elevate(InstallerPermissions *self);
 
 G_END_DECLS
+
+#endif
