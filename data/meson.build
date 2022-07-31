@@ -16,9 +16,3 @@ install_data(
     'org.freedesktop.policykit.pkexec.policy',
     install_dir: join_paths(get_option('datadir'), 'polkit-1', 'actions')
 )
-
-install_data(
-  'os-installer-wrapper',
-  install_dir: join_paths(prefix, 'bin'),
-  install_mode: ['rwxr-xr-x']
-)

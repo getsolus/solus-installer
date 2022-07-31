@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Install OS
 Icon=system-software-install
-Exec=os-installer-wrapper
+Exec=pkexec us.getsol.Installer
 Terminal=false
 Type=Application
 Categories=X-GNOME-Settings-Panel;GTK;System;Settings;
