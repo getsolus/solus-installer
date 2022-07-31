@@ -1,5 +1,6 @@
 installer_lib_headers = [
     'disk_manager.h',
+    'drive.h',
     'installer.h',
     'install_info.h',
     'os.h',
@@ -9,6 +10,7 @@ installer_lib_headers = [
 
 installer_lib_sources = [
     'disk_manager.c',
+    'drive.c',
     'installer.c',
     'install_info.c',
     'os.c',
