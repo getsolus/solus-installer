@@ -15,7 +15,6 @@
 //
 
 #include "user.h"
-#include <string.h>
 
 // clang-format off
 G_DEFINE_QUARK(installer-user-error-quark, installer_user_error)
