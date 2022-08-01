@@ -15,8 +15,6 @@
 //
 
 #include "disk_manager.h"
-#include "drive.h"
-#include "os.h"
 
 const gchar *os_release_paths[OS_RELEASE_PATHS_LENGTH] = {"etc/os-release",
                                                           "usr/lib/os-release"};

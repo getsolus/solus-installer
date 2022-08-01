@@ -51,6 +51,7 @@ struct _InstallerInfo {
     gboolean windows_present;
 
     /* Users */
+    InstallerUser **users;
 
     /* Disk Prober */
 
@@ -117,6 +118,7 @@ static void installer_info_finalize(GObject *obj) {
 
     self->owner = NULL;
     g_free(self->hostname);
+    g_free(self->users);
 
     G_OBJECT_CLASS(installer_info_parent_class)->finalize(obj);
 }

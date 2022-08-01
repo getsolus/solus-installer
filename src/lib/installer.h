@@ -18,7 +18,14 @@
 #define INSTALLER_H
 
 #include <blockdev/blockdev.h>
-#include <glib.h>
+
+#include "disk_manager.h"
+#include "drive.h"
+#include "install_info.h"
+#include "os.h"
+#include "partition.h"
+#include "permissions.h"
+#include "user.h"
 
 /**
  * Attempt to initialize the blockdev library with our required plugins.

@@ -5,7 +5,8 @@ installer_lib_headers = [
     'install_info.h',
     'os.h',
     'partition.h',
-    'permissions.h'
+    'permissions.h',
+    'user.h'
 ]
 
 installer_lib_sources = [
@@ -15,7 +16,8 @@ installer_lib_sources = [
     'install_info.c',
     'os.c',
     'partition.c',
-    'permissions.c'
+    'permissions.c',
+    'user.c'
 ]
 
 installer_lib_deps = [

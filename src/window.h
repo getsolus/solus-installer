@@ -17,11 +17,7 @@
 #ifndef INSTALLER_WINDOW_H
 #define INSTALLER_WINDOW_H
 
-#include "lib/disk_manager.h"
-#include "lib/drive.h"
-#include "lib/install_info.h"
-#include "lib/partition.h"
-#include "lib/permissions.h"
+#include "lib/installer.h"
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

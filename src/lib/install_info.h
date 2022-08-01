@@ -17,6 +17,7 @@
 #ifndef INSTALLER_INFO_H
 #define INSTALLER_INFO_H
 
+#include "user.h"
 #include <gio/gio.h>
 #include <glib.h>
 
